@@ -24,7 +24,9 @@ export default {
     data() {
         return {
             key: process.env.VUE_APP_YOUTUBE_CLONE_API_KEY ,
-            searchResult: []
+            searchResult: [],
+            result: [],
+
     }
 },
 
@@ -37,10 +39,16 @@ export default {
          console.log(res.data.items)
       },[])
     },
+//some videos are without id this removes them
+    filteredData(){
+        this.searchResult.filter(data => {
+            data.items.id.videoId == null
+        } )
+    },
  },
 
  mounted() {
-     //
+//default search paramiter to mimick youtube video recomendation on start
      this.search('cars')
  }
   
