@@ -10,8 +10,8 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "v-video-embed": "^1.0.8",
     "vue": "^3.0.0",
+    "vue-plyr": "^7.0.0",
     "vue-router": "^4.0.3"
   },
   "devDependencies": {

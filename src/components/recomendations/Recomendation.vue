@@ -1,21 +1,20 @@
 <template>
     <div id="recomended">
-        <div class='thumbnail' v-bind:class='{playing : isPlaying}' @click='isPlaying = !isPlaying' v-for='item in searchResult' :key='item' >
-            <div >
-                <iframe :src='`https://www.youtube.com/embed/${item.id.videoId}`'> </iframe>
+        <div :id='item.id.videoId' class='video' @click="addClass($event)" v-for='(item, index) in searchResult' :key='index' >
+         <a href='#' target="blank">
+            <div  classs='video__wraper'>
+                <img :id='item' class='video__wrapper__tumbnail' :src='item.snippet.thumbnails.medium.url' >
             </div>
-            <div class="discription">
-                <h4>{{item.snippet.description}}</h4>
-                <p>{{item.snippet.channelTitle}}</p>
+            <div class="video__info">
+                <h4 class='video__info__description'>{{item.snippet.description}}</h4>
+                <p class='video__info__title'>{{item.snippet.channelTitle}}</p>
             </div>
+         </a> 
         </div>
-       
     </div>
 </template>
 
 <script>
-// import axios from 'axios'
-
 
 export default {
     name: 'recomended',
@@ -26,38 +25,52 @@ export default {
 
     data(){
         return{
-            videoimage: {},
             key: process.env.VUE_APP_YOUTUBE_CLONE_API_KEY,
-            ytData: [],
-            isPlaying: false
+            currentVideoUri: [],
+            player: ''
         }
     },
 
-    mounted(){
-        
-    }
+    methods: {
+        addClass($event){
+            this.$refs.playWindow.classList.add('play-window');
+            let getattributeid = $event.currentTarget.getAttribute('id');
+            this.currentVideoUri = getattributeid;
+        },
+       
+        }
 }
-
-    
+ 
 </script>
-
+ 
 <style scoped>
 #recomended{
     display: grid;
     grid-template-columns: repeat(4, auto);
     margin-top: 50px;
-    /* width: 100%; */
+    grid-gap: 0px 30px;
 }
-.playing{
-    /* display: grid; */
-    grid-row: 1 / span 2;
-    grid-column: 1 / span 2;
+
+.video{
+    height: 280px;
+    margin-bottom: 20px;
 }
-.discription > h4{
+
+.video__wrapper__tumbnail{
+    width: 300px;
+    height: 200px;
+}
+
+.video__info__description,
+.video__info__title{
     display: -webkit-box;   
    -webkit-line-clamp: 1;   
    -webkit-box-orient: vertical;     
    overflow: hidden;
 }
-
+.play-window > iframe{
+    width: 65vw;
+    height: 65vh;
+    border: none;
+}
 </style>
