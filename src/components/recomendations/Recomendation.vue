@@ -42,8 +42,8 @@ export default {
 // get the ids of all the videos when loaded
         getAllVidId(videoId){
             this.allVideoId.push(videoId);
-            console.log('all video uri :' + this.allVideoId)
-        },   
+            // console.log('all video uri :' + this.allVideoId)
+        } 
     },
 
 }

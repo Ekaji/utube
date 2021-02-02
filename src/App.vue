@@ -25,8 +25,7 @@ export default {
         return {
             key: process.env.VUE_APP_YOUTUBE_CLONE_API_KEY ,
             searchResult: [],
-            result: [],
-
+            filteredResult: [],
     }
 },
 
@@ -35,25 +34,27 @@ export default {
     console.log(searchFor)
       axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&order=relevance&q=${searchFor}&key=${this.key}`)
       .then(res => {
-         this.searchResult = res.data.items
-         console.log(res.data.items)
-      },[])
+         this.searchResult = res.data.items;
+         console.log(res.data.items);
+      },[]);
     },
-//some videos are without id this removes them
+
+// some videos are without id this removes them
     filteredData(){
+        this.filteredResult = 
         this.searchResult.filter(data => {
-            data.items.id.videoId == null
-        } )
+            data.items.id.videoId == !null
+        } );
+        console.log(this.filteredResult)
     },
  },
 
- mounted() {
+ created() {
 //default search paramiter to mimick youtube video recomendation on start
      this.search('cars')
- }
-  
+ },
+ 
 }
-
     
 </script>
 
