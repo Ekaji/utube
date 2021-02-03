@@ -20,14 +20,14 @@ export default {
     name: 'recomended',
 
     props: {
-        searchResult: {type: Object}
+        searchResult: {type: Object},
+        getAllVidId: {type: Function}
     },
 
     data(){
         return{
             key: process.env.VUE_APP_YOUTUBE_CLONE_API_KEY,
             currentVideoUri: [],
-            allVideoId: [],
             player: '',
         }
     },
@@ -40,10 +40,11 @@ export default {
             console.log('current video uri :' + this.currentVideoUri)
         },
 // get the ids of all the videos when loaded
-        getAllVidId(videoId){
-            this.allVideoId.push(videoId);
-            // console.log('all video uri :' + this.allVideoId)
-        } 
+        // getAllVidId(videoId){
+        //     this.allVideoId.push(videoId);
+        //     console.log('all video uri :' + this.allVideoId)
+        // },
+
     },
 
 }
