@@ -7,10 +7,14 @@
             </div>
             <div class="video__info">
                 <h4 class='video__info__description'>{{item.snippet.description}}</h4>
-                <p class='video__info__title'>{{item.snippet.channelTitle}}</p>
+                <h6 class='video__info__title'>{{item.snippet.channelTitle}}</h6>
+            </div>
+            <div v-for='stats in videoStats' :key='stats'>
+                <span>{{stats.statistics.likeCount}}</span>
             </div>
          </a> 
         </div>
+            
     </div>
 </template>
 
@@ -21,7 +25,8 @@ export default {
 
     props: {
         searchResult: {type: Object},
-        getAllVidId: {type: Function}
+        getAllVidId: {type: Function},
+        videoStats: {type: Object}
     },
 
     data(){
