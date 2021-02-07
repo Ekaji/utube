@@ -4,7 +4,7 @@
             <searchbar :search='search'  />
         </div>
         <div class="recomend">
-            <recomendation :searchResult='searchResult' :getAllVidId='getAllVidId' :videoStats='videoStats' />
+            <recomendation  />
         </div>
     </div> 
 </template>
@@ -18,7 +18,7 @@ export default {
     name: 'app',
     components: {
         searchbar,
-        Recomendation
+        Recomendation,
     },
 
     data() {
@@ -26,7 +26,7 @@ export default {
             key: process.env.VUE_APP_YOUTUBE_CLONE_API_KEY ,
             searchResult: [],
             videoStats: [],
-            allVideoId: []
+            allVideoId: [],
     }
 },
 
@@ -35,62 +35,34 @@ export default {
     console.log(searchFor)
      axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&order=relevance&q=${searchFor}&key=${this.key}`)
       .then(res => {
-          if (this.searchResult.length >= 25){
-            this.searchResult = [];
-          }
-        this.searchResult = [...res.data.items].sort(this.sortWithEtag);
-
-         console.log('sr :' , this.searchResult);
-      },[])
+        this.searchResult = [...res.data.items];
+       let Result = this.searchResult.map(result => ({
+            id : result.id.videoId , title : result.snippet.description , image : result.snippet.thumbnails.medium.url 
+        }))
       
-
+        console.log(Result.id );
+        this.getStats();
+      },[])
     },
 
 // returns the statistics of every video
     getStats(){
-  axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=${[...this.allVideoId]}&key=${this.key}`)
+  axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=${[...this.searchResult]}&key=${this.key}`)
         .then(res => {
-        //      if (this.videoStats.length >= 25){
-        //     this.videoStats = [];
-        //   }
-        this.videoStats = [...res.data.items].sort(this.sortWithEtag);
-            
-            console.log('alvid', this.videoStats)
+        this.videoStats = res.data.items;
+        console.log(this.videoStats)
         })
-    },
+    }
+  },
 
-// get the ids of all the videos when loaded
-// pass as props to recomended component
-     getAllVidId(videoId){
-         if (this.allVideoId.length >= 25){
-            this.allVideoId = [];
-          }
-            this.allVideoId.push(videoId);
-            this.getStats()
-        },
-
-//  function to arrange the returned data
-    sortWithEtag(a, b){
-        const idA = a.id.videoId;
-        const idB = b.id.videoId;
-
-        if ( idA < idB){
-            return -1;
-        } else if (idA > idB){
-            return 1;
-        }
-        return 0;
-    },
-    
- },
-
- created() {
+ mounted() {
 //default search paramiter to mimick youtube video recomendation on start
      this.search('cars')
  },
- 
 }
-    
+ 
+
+
 </script>
 
 <style scoped>
@@ -108,7 +80,7 @@ html, body {
   color: #2c3e50;
   margin: -8px;
 }
-.nav-bar{
+.nav-bar {
     position: sticky;
     top: 0;
     margin-bottom: 30px;
