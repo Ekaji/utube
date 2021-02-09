@@ -25,10 +25,8 @@ export default {
         return {
             key: process.env.VUE_APP_YOUTUBE_CLONE_API_KEY ,
             searchResut: [],
-            videoIDs: [],
             videoStats: [],
-            mergedData: [],
-            allVideoId: []
+            mergedData: []
     }
 },
    
@@ -38,94 +36,67 @@ export default {
     console.log(searchFor);
      axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&order=relevance&q=${searchFor}&key=${this.key}`)
       .then(res => {
+//complete search response
         let searchResponse = [...res.data.items];
+
+//search response with sellected values extracted
         this.searchResult = searchResponse.map(result => ({
             id : result.id.videoId , title : result.snippet.description , image : result.snippet.thumbnails.medium.url 
         }),
     );
 
-      this.videoIDs = this.searchResult.map(result => {
+//search with ids extracted
+      let videoIDs = this.searchResult.map(result => {
             return result.id
         },
     );
-        console.log('sr ', this.searchResult, 'ids ', this.videoIDs);
-        this.getStats(this.videoIDs);
+
+//calling the getstats function with video ids passed as parameters
+        this.getStats(videoIDs);
       },[])
-    },
+},
 
 // returns the statistics of every video
   getStats(ids){
      axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=${ids}&key=${this.key}`)
         .then(res => {
+//returns video statistics
         let Stats = [...res.data.items];
 
+//video statistics with specific values extracted
         this.videoStats = Stats.map(stats => ({
             id : stats.id , comment: stats.statistics.commentCount, dislike: stats.statistics.dislikeCount, like: stats.statistics.likeCount,
             views: stats.statistics.viewCount
-        })
+            }
+        )
     );
 
-        console.log('vidstats ', this.videoStats)
-
+//calling the mergeArrayObjects merges the videoStats and searchResult
         this.mergeArrayObjects(this.videoStats, this.searchResult);
-        // console.log(this.mergeArrayObjects(this.videoStats, this.searchResult));
-
         },
-        
-        )
+    )
+},
 
-  },
-
-  mergeArrayObjects(arr1,arr2){
-  this.mergedData = arr1.map((item,i)=>{
-     if(item.id === arr2[i].id){
+//function to merge two Object of arrays
+  mergeArrayObjects(arr1, arr2){
+    this.mergedData = arr1.map((item, i) => {
+        if (item.id === arr2[i].id) {
          //merging two objects
-       return Object.assign({}, item, arr2[i])
-     }
-  }
-  
-  );
-  console.log(this.mergedData)
+            return Object.assign({}, item, arr2[i])
+        }
+    }
+);
 }
 
- 
-//     mergedById(a1, a2){
-//    this.mergedData = a1.map(itm => ({
-//         ...a2.find((item) => (item.id === itm.id) && item),
-//         ...itm
-//         }
-//     ),
-//     console.log('merged ', this.mergedData)
-// );
 
-// },
-  
-
-//   mergedResponse(){
-//     //   thi mergedData = [];
-//       for(let i=0; i < this.searchResut.length; i++) {
-//         this.mergedData.push({
-//          ...this.searchResut[i],
-//          ...(this.videoStats.find((itmInner) => itmInner.id === this.searchResut[i].id))
-//          },
-
-//   );
-//   console.log('merged ', this.mergedData)
-// console.log('response')
-
-// }
-
-//   },
-
-
- },
-
+},
 
 
  mounted() {
 //default search paramiter to mimick youtube video recomendation on start
      this.search('cars')
  },
+
 }
 
 
