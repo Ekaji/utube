@@ -1,9 +1,14 @@
 <template>
     <div id="recomended">
-        <div  >
-         <a href='#'  target="blank">
+        <div class='recomended' v-for='items in mergedData' :key='items'>
+         <a href='#' target="blank" >
             <div  classs='video__wraper'>
-                <img  >
+                <img :src='items.image' >
+            </div>
+            <div class="recomended-info">
+                <div class="recomended-title">{{items.title}}</div>
+                <!-- <div class="recomended-channel-name">{}</div> -->
+                <div class="recomended-views">{{items.views}}</div>
             </div>
          </a> 
         </div>
@@ -15,12 +20,14 @@
 
 export default {
     name: 'recomended',
+    props:{
+        mergedData: { required: true, type: Object},
+    },
 
     data(){
         return{
             key: process.env.VUE_APP_YOUTUBE_CLONE_API_KEY,
-            currentVideoUri: [],
-            player: '',
+          
         }
     },
 
