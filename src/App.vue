@@ -26,17 +26,15 @@ export default {
             key: process.env.VUE_APP_YOUTUBE_CLONE_API_KEY ,
             searchResut: [],
             videoStats: [],
-            // videoIDs: [],
             mergedData: [],
-            // durationAndStats: []
+            baseURI: 'https://youtube.googleapis.com/youtube/v3/'
     }
-},
-   
+}, 
 
   methods: {
     search(searchFor) {
     console.log(searchFor);
-     axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&order=relevance&q=${searchFor}&key=${this.key}`)
+     axios.get(`${this.baseURI}search?part=snippet&maxResults=25&order=relevance&q=${searchFor}&key=${this.key}`)
       .then(res => {
 //complete search response
         let searchResponse = [...res.data.items];
@@ -55,18 +53,21 @@ export default {
 
 //calling the getstats function with video ids passed as parameters
 
-        // this.getStats(videoIDs);
         this.getStatsAndDuration(videoIDs)
       },[])
 },
 
+//method to get video statistics and duration and also merge them
  getStatsAndDuration(IDs){
-        let getstats = axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=${IDs}&key=${this.key}`);
-        let getDuration = axios.get(`https://youtube.googleapis.com/youtube/v3/videos?id=${IDs}&part=contentDetails&key=${this.key}`);
+        let getstats = axios.get(`${this.baseURI}videos?part=statistics&id=${IDs}&key=${this.key}`);
+        let getDuration = axios.get(`${this.baseURI}videos?id=${IDs}&part=contentDetails&key=${this.key}`);
         
-        axios.all([getstats, getDuration])
+       axios.all([getstats, getDuration])
         .then( axios.spread( (stats, duration) => {
-          this.mergedData = this.mergeArrayObjects([...stats.data.items], [...duration.data.items]);
+            //merge stats and duration
+          let merged = this.mergeArrayObjects([...stats.data.items], [...duration.data.items]);
+          //also merge search result
+          this.mergedData = this.mergeArrayObjects(this.searchResult, [...merged]);
           console.log(this.mergedData)
         },
     ),
@@ -74,41 +75,16 @@ export default {
 
   },
 
-// returns the statistics of every video
-
-//   getStats(ids){
-//      axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=${ids}&key=${this.key}`)
-//         .then(res => {
-// //returns video statistics
-//         let Stats = [...res.data.items];
-
-// //video statistics with specific values extracted
-//         this.videoStats = Stats.map(stats => ({
-//             id : stats.id , comment: stats.statistics.commentCount, dislike: stats.statistics.dislikeCount, like: stats.statistics.likeCount,
-//             views: stats.statistics.viewCount
-//             }
-//         )
-//     );
-
-// //calling the mergeArrayObjects merges the videoStats and searchResult
-//         this.mergeArrayObjects(this.videoStats, this.searchResult);
-//         },
-//     )
-// },
-
 
 //function to merge two Object of arrays
   mergeArrayObjects(arr1, arr2){
-    // this.mergedData = 
     return arr1.map((item, i) => {
-        if (item.id === arr2[i].id) {
-         //merging two objects
+        if (item.id === arr2[i].id ) {
             return Object.assign({}, item, arr2[i])
         }
 
     }
 );
-    // console.log(this.mergedData)
 
 },
 
