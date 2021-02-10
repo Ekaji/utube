@@ -16,9 +16,7 @@
 export default {
     name: 'searchBar',
     props: {
-        search: {
-            reqired: true,
-            type: Function}
+        search: { reqired: true, type: Function}
     },
 
     data(){
