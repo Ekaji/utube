@@ -1,17 +1,23 @@
 import {createWebHistory, createRouter} from 'vue-router'
 import Search from '../components/searchBar/SearchBar'
-import App from '../App'
+import Home from '../components/home/Home'
+import Video from '../components/video/Video'
 
 const routes = [
     {
         path: '/',
         name: 'Home',
-        component: App
+        component: Home
     },
     {
-        path: '/',
+        path: '/search',
         name: 'Search',
         component: Search
+    },
+    {
+        path: '/video',
+        name: 'Video',
+        component: Video
     }
 ];
 

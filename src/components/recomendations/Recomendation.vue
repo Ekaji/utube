@@ -1,7 +1,7 @@
 <template>
     <div id="recomended">
         <div class='recomended' v-for='items in mergedData' :key='items'>
-         <a href='#' target="blank" >
+         <router-link to='/video' href='#' target="blank" >
             <div  classs='video__wraper'>
                 <img :src='items.image' >
                 <p>{{items.contentDetails.duration.substr(2).replace('M', ' : ').replace(/S|T|D/g, '')}}</p>
@@ -10,7 +10,7 @@
                 <div class="recomended__title">{{items.title}}</div>
                 <div class="recomended__views">{{items.statistics.viewCount}} views</div>
             </div>
-         </a>
+         </router-link>
         </div>        
     </div>
 </template>
