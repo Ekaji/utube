@@ -6,7 +6,7 @@
         <div class="recomend">
             <recomendation :mergedData='mergedData' />
         </div>
-        <router-view/>
+        <!-- <router-view/> -->
     </div> 
 </template>
 
@@ -25,7 +25,7 @@ export default {
     data() {
         return {
             key: process.env.VUE_APP_YOUTUBE_CLONE_API_KEY ,
-            searchResut: [],
+            searchResult: [],
             videoStats: [],
             mergedData: [],
             baseURI: 'https://youtube.googleapis.com/youtube/v3/'
@@ -38,7 +38,7 @@ export default {
      axios.get(`${this.baseURI}search?part=snippet&maxResults=25&order=relevance&q=${searchFor}&key=${this.key}`)
       .then(res => {
 //complete search response
-        let searchResponse = [...res.data.items];
+        let searchResponse = res.data.items;
 
 //search response with sellected values extracted
         this.searchResult = searchResponse.map(result => ({
@@ -53,7 +53,6 @@ export default {
     );
 
 //calling the getstats function with video ids passed as parameters
-
         this.getStatsAndDuration(videoIDs)
       },[])
 },
@@ -65,11 +64,13 @@ export default {
         
        axios.all([getstats, getDuration])
         .then( axios.spread( (stats, duration) => {
-            //merge stats and duration
+            // merge stats and duration
           let merged = this.mergeArrayObjects([...stats.data.items], [...duration.data.items]);
+          //filter search result to remove undefined
+         let filtered =  this.searchResult.filter(items => items.id !== undefined)
           //also merge search result
-          this.mergedData = this.mergeArrayObjects(this.searchResult, [...merged]);
-          console.log(this.mergedData)
+          this.mergedData = this.mergeArrayObjects( merged , filtered);
+        //   console.log(filtered)
         },
     ),
 )
@@ -77,16 +78,13 @@ export default {
   },
 
 
-//function to merge two Object of arrays
+// function to merge two Object of arrays
   mergeArrayObjects(arr1, arr2){
     return arr1.map((item, i) => {
         if (item.id === arr2[i].id ) {
             return Object.assign({}, item, arr2[i])
-        }
-
-    }
-);
-
+            }
+        });
     },
 
 },

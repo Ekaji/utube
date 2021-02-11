@@ -1,20 +1,17 @@
 <template>
     <div id="recomended">
         <div class='recomended' v-for='items in mergedData' :key='items'>
-         <router-link to='/video' href='#' target="blank" >
+         <a href='#' target="blank" >
             <div  classs='video__wraper'>
                 <img :src='items.image' >
-                <p>{{items.contentDetails.duration.substr(2).replace('M', ' : ').replace(/S|D/g, '')}}</p>
+                <p>{{items.contentDetails.duration.substr(2).replace('M', ' : ').replace(/S|T|D/g, '')}}</p>
             </div>
             <div class="recomended__info">
                 <div class="recomended__title">{{items.title}}</div>
-                <!-- <div class="recomended-channel-name">{}</div> -->
                 <div class="recomended__views">{{items.statistics.viewCount}} views</div>
             </div>
-         </router-link> 
-        </div>
-        <!-- <router-view/> -->
-            
+         </a>
+        </div>        
     </div>
 </template>
 
@@ -31,10 +28,6 @@ export default {
             key: process.env.VUE_APP_YOUTUBE_CLONE_API_KEY,
           
         }
-    },
-
-    methods: {
-
     },
 
 }
